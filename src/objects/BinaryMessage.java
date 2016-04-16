@@ -7,6 +7,7 @@ public class BinaryMessage {
 
     public String originalBinary;
     public String cipherBinary;
+    public int[] validIndexes = {3, 4, 5, 6, 10, 11, 12, 13, 17, 18, 19, 20, 24, 25, 26, 27, 31, 32, 33, 34, 38, 39, 40, 41, 45, 46, 47, 48, 52, 53, 54, 55};
 
     public int[] switcher;
     public int shifter;
@@ -16,13 +17,17 @@ public class BinaryMessage {
     public BinaryMessage(String originalBinary) {
         this.originalBinary = originalBinary;
         this.switcher = generateSwitcher();
+        this.cipherBinary = generateCipherBinary();
     }
 
+    //generate array of integers from 0 to 64 with indexes shuffled , but first 3/8 ints in each 8 set untouched
     public int[] generateSwitcher() {
 
         Random random = new Random();
 
-        shifter = random.nextInt(8);
+        while(shifter < 3)
+            shifter = random.nextInt(8);
+
         int[] switcher = new int[64];
 
         int[] numberArray = new int[64];
@@ -35,6 +40,7 @@ public class BinaryMessage {
         int counterShifter = shifter;
 
         for (int x = 0; x < 64; x++) {
+
             if (x == counterShifter) {
                 counterShifter = counterShifter + 8;
                 counter++;
@@ -45,13 +51,17 @@ public class BinaryMessage {
         }
 
         for (int x = 0; x < 56; x++) {
-            int firstIndex = random.nextInt(56);
-            int secondIndex = random.nextInt(56);
-            int first = shuffleArray[firstIndex];
-            shuffleArray[firstIndex] = shuffleArray[secondIndex];
-            shuffleArray[secondIndex] = first;
-        }
 
+            int first = random.nextInt(32);
+            int second = random.nextInt(32);
+
+            int firstIndex = validIndexes[first];
+            int secondIndex = validIndexes[second];
+
+            int temp = shuffleArray[firstIndex];
+            shuffleArray[firstIndex] = shuffleArray[secondIndex];
+            shuffleArray[secondIndex] = temp;
+        }
 
         counter = 0;
         counterShifter = shifter;
@@ -69,6 +79,22 @@ public class BinaryMessage {
         }
 
         return switcher;
+    }
+
+    //switches positions of original binary digits based on values in switcher
+    public String generateCipherBinary() {
+
+        String cipherBinary = "";
+        int numberOf64Bits = originalBinary.length()/64;
+
+        for (int x = 0; x < numberOf64Bits; x++) {
+            String current64Bits = originalBinary.substring((x * 64), (x * 64) + 64);
+
+            for (int y = 0; y < 64; y++)
+                cipherBinary = cipherBinary + current64Bits.charAt(switcher[y]);
+        }
+
+        return cipherBinary;
     }
 
     public String getOriginalBinary() {

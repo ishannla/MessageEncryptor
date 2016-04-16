@@ -3,28 +3,50 @@ package objects;
 public class PlainMessage {
 
     private String messageText;
-    private int characterNumber;
+    private int messageLength;
 
     private int[] messageDecimalArray;
     private String messageDecimal;
+
     private String messageHex;
     private String messageBinary;
 
     public static char[] hexArray = {'A','B','C','D','E','F'};
 
     public PlainMessage(String message) {
-        messageText = message;
-        characterNumber = messageText.length();
-        messageDecimalArray = returnDecimalArray();
+        messageText = generateMessage(message);
+        messageLength = messageText.length();
+        messageDecimalArray = generateDecimalArray();
 
-        messageDecimal = returnDecimal();
-        messageHex = returnHexadecimal();
-        messageBinary = returnBinary();
+        messageDecimal = generateDecimal();
+        messageHex = generateHexadecimal();
+        messageBinary = generateBinary();
     }
 
-    public int[] returnDecimalArray() {
+    //generates formatted message by adding extra spaces at end to ensure messageLength divisible by 8
+    public String generateMessage(String message) {
 
-        int[] decimalArray = new int[characterNumber];
+        int remainder = 0;
+        int length = message.length();
+
+        if (length % 8 != 0) {
+            int extra = length % 8;
+            remainder = 8 - extra;
+        }
+
+        String spaces = "";
+        for (int x = 0; x < remainder; x++)
+            spaces = spaces + " ";
+
+        return message + spaces;
+
+
+    }
+
+    //generates array of decimal values by casting each individual character within messageText to int
+    public int[] generateDecimalArray() {
+
+        int[] decimalArray = new int[messageLength];
         int messageLength = messageText.length();
 
         for (int x = 0; x < messageLength; x++){
@@ -38,7 +60,8 @@ public class PlainMessage {
 
     }
 
-    public String returnDecimal() {
+    //generates String of decimal values separated by spaces from messageDecimalArray
+    public String generateDecimal() {
 
         String decimal = "";
 
@@ -48,11 +71,12 @@ public class PlainMessage {
         return decimal;
     }
 
-    public String returnHexadecimal() {
+    //converts each decimal value to 2-digit hexadecimal value, returns entire String
+    public String generateHexadecimal() {
 
         String finalHexString = "";
 
-        for (int x = 0; x < characterNumber; x++){
+        for (int x = 0; x < messageLength; x++){
 
             int decValue = messageDecimalArray[x];
             String hexString = methods.ConverterMethods.convertDecimalToHex(decValue);
@@ -65,11 +89,12 @@ public class PlainMessage {
 
     }
 
-    public String returnBinary() {
+    //converts each 2-digit hexadecimal value to 8-bit binary value, returns entire String
+    public String generateBinary() {
 
         String finalBinary = "";
 
-        for (int x = 0; x < characterNumber; x++){
+        for (int x = 0; x < messageLength; x++){
 
             int startIndex = x * 2;
             String hexValue = messageHex.substring(startIndex, startIndex + 2);
@@ -87,9 +112,6 @@ public class PlainMessage {
 
         }
 
-        while (finalBinary.length() % 64 != 0)
-            finalBinary = finalBinary + "0";
-
         return finalBinary;
     }
 
@@ -106,7 +128,7 @@ public class PlainMessage {
     }
 
     public int getCharacterNumber() {
-        return characterNumber;
+        return messageLength;
     }
 
     public String getMessageDecimal() {
