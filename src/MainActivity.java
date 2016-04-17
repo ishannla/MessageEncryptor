@@ -1,14 +1,13 @@
 import methods.ConverterMethods;
-import objects.BinaryMessage;
+import objects.EncryptedMessage;
 import objects.PlainMessage;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainActivity {
 
     public static PlainMessage plainMessage;
-    public static BinaryMessage binaryMessage;
+    public static EncryptedMessage encryptedMessage;
 
     public static void main (String[] args) {
 
@@ -22,10 +21,10 @@ public class MainActivity {
         plainMessage = new PlainMessage(tester);
         printPlainMessage(plainMessage);
 
-        binaryMessage = new BinaryMessage(plainMessage.getMessageBinary());
-        printBinaryMessage(binaryMessage);
+        encryptedMessage = new EncryptedMessage(plainMessage.getMessageBinary());
+        printBinaryMessage(encryptedMessage);
 
-        printEncryptedText(binaryMessage.getCipherBinary());
+        printEncryptedText(encryptedMessage.getCipherBinary());
 
         final long elapsedTime = System.currentTimeMillis() - startTime;
         System.out.println();
@@ -44,7 +43,7 @@ public class MainActivity {
 
     }
 
-    public static void printBinaryMessage(BinaryMessage message) {
+    public static void printBinaryMessage(EncryptedMessage message) {
 
         System.out.println();
 

@@ -3,18 +3,19 @@ package objects;
 import java.util.Arrays;
 import java.util.Random;
 
-public class BinaryMessage {
+public class EncryptedMessage {
 
     public String originalBinary;
     public String cipherBinary;
     public int[] validIndexes = {3, 4, 5, 6, 10, 11, 12, 13, 17, 18, 19, 20, 24, 25, 26, 27, 31, 32, 33, 34, 38, 39, 40, 41, 45, 46, 47, 48, 52, 53, 54, 55};
 
+    //instead of generating array of size 64, generate array of size 8 - apply same shifter to each byte within 64 bit value
     public int[] switcher;
     public int shifter;
 
     public String key;
 
-    public BinaryMessage(String originalBinary) {
+    public EncryptedMessage(String originalBinary) {
         this.originalBinary = originalBinary;
         this.switcher = generateSwitcher();
         this.cipherBinary = generateCipherBinary();
